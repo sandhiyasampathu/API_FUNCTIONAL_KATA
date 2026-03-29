@@ -50,3 +50,38 @@ Feature: Get Booking by ID
         And the value of "bookingdates.checkout" should be "2026-08-15"
         And the value of "email" should be "lëyla.fontàine@example.com"
         And the value of "phone" should be "12345678901"
+
+    # ---------------------------- Negative Scenarios ----------------------------
+    @getbooking @negative @auth
+    Scenario Outline: Fail to retrieve booking with missing or invalid token
+        Given the Cookie header is set to "<cookie_value>"
+        When I send a GET request to "/booking/{booking_id}"
+        Then the response status code should be <status_code>
+        And the response body should contain the key "error"
+        And the value of "error" should be "Unauthorized"
+
+        Examples:
+            | cookie_value       | status_code | reason              |
+            |                    | 401         | missing token       |
+            | token=invalidtoken | 401         | invalid token value |
+            | token=             | 401         | empty token value   |
+            | wrongheader=abc123 | 401         | wrong cookie key    |
+
+    # ---------------------------- Exploratory / Edge Cases ----------------------------
+    @getbooking @negative @exploratory @inputvalidation
+    Scenario Outline: Fail to retrieve a non-existent booking
+        Given the Cookie header is set to "token={auth_token}"
+        When I send a GET request to "/booking/<booking_id>"
+        Then the response status code should be <status_code>
+
+        Examples:
+            | booking_id | status_code | reason          |
+            | 9999999    | 404         | non-existent ID |
+            | 0          | 404         | zero ID         |
+
+    @getbooking @negative @auth @exploratory
+    Scenario: Retrieve booking without providing any Cookie header
+        When I send a GET request to "/booking/{booking_id}" without any Cookie header
+        Then the response status code should be 401
+        And the response body should contain the key "error"
+        And the value of "error" should be "Unauthorized"
