@@ -9,7 +9,7 @@ Feature: Create Booking
         And the request Content-Type header is set to "application/json"
 
     # ---------------------------- Positive Scenarios ----------------------------
-    @booking @positive
+    @smoke @createbooking @positive
     Scenario Outline: Successfully create a booking with valid data
         Given I have the request body with booking details:
             | roomid      | <roomid>      |
@@ -40,7 +40,7 @@ Feature: Create Booking
             | 1      | Matthias  | De Smet  | true        | 2026-07-20 | 2026-07-26 | matthias.desmet@testmail.com | 32471122334  | 200         |
 
     # ---------------------------- Negative Scenarios ----------------------------
-    @booking @negative @validation
+    @createbooking @negative @inputvalidation
     Scenario Outline: Fail to create booking with invalid firstname
         Given I have the request body with firstname "<firstname>" and other valid fields
         When I send a POST request to the booking endpoint
@@ -53,6 +53,7 @@ Feature: Create Booking
             | Lu                       | too short (below 3 chars) |
             | ThisNameIsWayTooLong1234 | too long (above 18 chars) |
 
+    @createbooking @negative @inputvalidation
     Scenario Outline: Fail to create booking with invalid lastname
         Given I have the request body with lastname "<lastname>" and other valid fields
         When I send a POST request to the booking endpoint
@@ -65,6 +66,7 @@ Feature: Create Booking
             | Pe                        | too short (below 3 chars) |
             | ThisLastNameIsTooLong1234 | too long (above 18 chars) |
 
+    @createbooking @negative @inputvalidation
     Scenario Outline: Fail to create booking with invalid phone number
         Given I have the request body with phone "<phone>" and other valid fields
         When I send a POST request to the booking endpoint
@@ -77,6 +79,7 @@ Feature: Create Booking
             | 3247123456             | too short (below 11 chars) |
             | 3247123456789012345678 | too long (above 21 chars)  |
 
+    @createbooking @negative @inputvalidation
     Scenario Outline: Fail to create booking with invalid email
         Given I have the request body with email "<email>" and other valid fields
         When I send a POST request to the booking endpoint
@@ -91,6 +94,7 @@ Feature: Create Booking
             | jeanluc@domain_com | invalid domain format |
             | @angélique.fr      | missing local part    |
 
+    @createbooking @negative @inputvalidation
     Scenario: Fail to create booking when checkout is before checkin
         Given I have the request body with checkin "2026-05-15" and checkout "2026-05-10"
         When I send a POST request to the booking endpoint
@@ -98,6 +102,7 @@ Feature: Create Booking
         And the response body should contain the key "errors"
         And the errors list should contain "Failed to create booking"
 
+    @createbooking @negative @inputvalidation
     Scenario: Fail to create booking when checkout equals checkin
         Given I have the request body with checkin "2026-05-10" and checkout "2026-05-10"
         When I send a POST request to the booking endpoint
