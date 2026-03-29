@@ -27,7 +27,7 @@ Feature: Delete Booking
         When I send a DELETE request to "/booking/{booking_id}"
         Then the response status code should be 201
 
-    @deletebooking@positive @integration
+    @deletebooking @positive @integration
     Scenario: Verify booking exists before deletion
         Given the Cookie header is set to "token={auth_token}"
         When I send a GET request to "/booking/{booking_id}" with Cookie "token={auth_token}"
@@ -43,3 +43,61 @@ Feature: Delete Booking
         Then the response status code should be 201
         When I send a GET request to "/booking/{booking_id}" with Cookie "token={auth_token}"
         Then the response status code should be 404
+
+# ---------------------------- Negative Scenarios ----------------------------
+
+    @deletebooking @negative @auth @inputvalidation
+    Scenario Outline: Fail to delete booking with invalid or missing token
+        Given the Cookie header is set to "<cookie_value>"
+        When I send a DELETE request to "/booking/{booking_id}"
+        Then the response status code should be <status_code>
+        And the response body should contain the key "error"
+        And the value of "error" should be "Unauthorized"
+
+        Examples:
+            | cookie_value       | status_code |
+            |                    | 401         |
+            | token=invalidtoken | 401         |
+            | token=             | 401         |
+            | wrongkey=abc123    | 401         |
+
+    @deletebooking @negative @auth
+    Scenario: Fail to delete booking without providing any Cookie header
+        When I send a DELETE request to "/booking/{booking_id}" without any Cookie header
+        Then the response status code should be 401
+        And the response body should contain the key "error"
+        And the value of "error" should be "Unauthorized"
+
+    # ---------------------------- Exploratory / Edge Cases ----------------------------
+
+    @deletebooking @negative @exploratory
+    Scenario: Fail to delete a non-existent booking
+        Given the Cookie header is set to "token={auth_token}"
+        When I send a DELETE request to "/booking/9999999"
+        Then the response status code should be 404
+
+    @deletebooking @negative @exploratory
+    Scenario: Delete the same booking twice returns error on second attempt
+        Given the Cookie header is set to "token={auth_token}"
+        When I send a DELETE request to "/booking/{booking_id}"
+        Then the response status code should be 201
+        When I send a DELETE request to "/booking/{booking_id}" again
+        Then the response status code should be 404
+
+    @deletebooking @negative @inputvalidation @exploratory
+    Scenario Outline: Fail to delete booking with invalid ID formats
+        Given the Cookie header is set to "token={auth_token}"
+        When I send a DELETE request to "/booking/<invalid_id>"
+        Then the response status code should be <status_code>
+
+        Examples:
+            | invalid_id | status_code |
+            | 0          | 404         |
+            | -1         | 404         |
+            | abc        | 400         |
+
+    @deletebooking @negative @auth @exploratory
+    Scenario: Fail to delete booking with expired token
+        Given the Cookie header is set to "token=expired_token"
+        When I send a DELETE request to "/booking/{booking_id}"
+        Then the response status code should be 401
