@@ -1,3 +1,4 @@
+@booking @createbooking
 Feature: Create Booking
     As a user of the Restful-Booker API
     I want to create a new hotel booking
@@ -9,7 +10,7 @@ Feature: Create Booking
         And the request Content-Type header is set to "application/json"
 
     # ---------------------------- Positive Scenarios ----------------------------
-    @smoke @createbooking @positive
+    @createbooking @smoke @positive
     Scenario Outline: Successfully create a booking with valid data
         Given I have the request body with booking details:
             | roomid      | <roomid>      |
