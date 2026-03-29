@@ -46,8 +46,11 @@ The Swagger file is imported into Bruno for manual validation of the API.
 | #  | Endpoint / Action       | Observation / Issue                                                                 | Screenshot |
 |----|------------------------|-----------------------------------------------------------------------------------|------------|
 | 1  | Create Booking         | Returns **201** instead of 200 as per Swagger documentation                       | ![1_create_booking_201](src/test/resources/observations/1_create_booking_201.png) |
-| 2  | Create Booking         | Booking key, email, and phone not available in the response                        | ![2_create_booking_missing](src/test/resources/observations/2_create_booking_missing.png) |
-| 3  | Create Booking         | Allows back-dated booking                                                          | ![3_create_booking_backdated](src/test/resources/observations/3_create_booking_backdated.png) |
-| 4  | Create Booking         | Incorrect input date validations; check-in dates in response are modified         | ![4_create_booking_dates](src/test/resources/observations/4_create_booking_dates.png) |
-| 5  | Create Booking         | Swagger specifies 3–18 chars for last name, but no error displayed                | ![5_create_booking_lastname](src/test/resources/observations/5_create_booking_lastname.png) |
-| 6  | Create Booking         | Error displayed when last name is more than 30 characters                          | ![6_create_booking_lastname30](src/test/resources/observations/6_create_booking_lastname30.png) |
+| 2  | Create Booking         | Booking key **email and phone** not available in the response                        | ![2_create_booking_missing](src/test/resources/observations/2_create_booking_missing.png) |
+| 3  | Create Booking         | Allows **back-dated** booking                                                          | ![3_create_booking_backdated](src/test/resources/observations/3_create_booking_backdated.png) |
+| 4  | Create Booking         | **Incorrect** input date validations; check-in dates in response are modified         | ![4_create_booking_dates](src/test/resources/observations/4_create_booking_dates.png) |
+| 5  | Create Booking         | Swagger specifies **3–18 chars** for last name, but no error displayed                | ![5_create_booking_lastname](src/test/resources/observations/5_create_booking_lastname.png) |
+| 6  | Create Booking         | Error displayed when last name is **more than 30 characters**                          | ![6_create_booking_lastname30](src/test/resources/observations/6_create_booking_lastname30.png) |
+| 7  | Create Booking         | **No error** displayed for email addresses with **incorrect TLD**(Top-Level Domain)                          | ![7_create_booking_email](src/test/resources/observations/7_create_booking_email.png) |
+| 8  | Create Booking         | Returns **409 Conflict** when the same room ID is used                             | ![8_create_booking_409](src/test/resources/observations/8_create_booking_409.png) |
+| 9  | Create Booking         | Invalid dates (check-out before check-in) also return **409 Conflict**             | ![9_create_booking_dates409](src/test/resources/observations/9_create_booking_dates409.png) |
