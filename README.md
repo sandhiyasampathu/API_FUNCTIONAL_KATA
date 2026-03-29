@@ -45,12 +45,17 @@ The Swagger file is imported into Bruno for manual validation of the API.
 
 | #  | Endpoint / Action       | Observation / Issue                                                                 | Screenshot |
 |----|------------------------|-----------------------------------------------------------------------------------|------------|
-| 1  | Create Booking         | Returns **201** instead of 200 as per Swagger documentation                       | ![1_create_booking_201](src/test/resources/observations/1_create_booking_201.png) |
-| 2  | Create Booking         | Booking key **email and phone** not available in the response                        | ![2_create_booking_missing](src/test/resources/observations/2_create_booking_missing.png) |
-| 3  | Create Booking         | Allows **back-dated** booking                                                          | ![3_create_booking_backdated](src/test/resources/observations/3_create_booking_backdated.png) |
-| 4  | Create Booking         | **Incorrect** input date validations; check-in dates in response are modified         | ![4_create_booking_dates](src/test/resources/observations/4_create_booking_dates.png) |
-| 5  | Create Booking         | Swagger specifies **3–18 chars** for last name, but no error displayed                | ![5_create_booking_lastname](src/test/resources/observations/5_create_booking_lastname.png) |
-| 6  | Create Booking         | Error displayed when last name is **more than 30 characters**                          | ![6_create_booking_lastname30](src/test/resources/observations/6_create_booking_lastname30.png) |
-| 7  | Create Booking         | **No error** displayed for email addresses with **incorrect TLD**(Top-Level Domain)                          | ![7_create_booking_email](src/test/resources/observations/7_create_booking_email.png) |
-| 8  | Create Booking         | Returns **409 Conflict** when the same room ID is used                             | ![8_create_booking_409](src/test/resources/observations/8_create_booking_409.png) |
-| 9  | Create Booking         | Invalid dates (check-out before check-in) also return **409 Conflict**             | ![9_create_booking_dates409](src/test/resources/observations/9_create_booking_dates409.png) |
+| 1  | Create Booking         | Returns **201** instead of **200** as per Swagger.                                  | ![1_create_booking_201](src/test/resources/observations/1_create_booking_201.png) |
+| 2  | Create Booking         | **booking, email, phone** missing in response.                                      | ![2_create_booking_missing](src/test/resources/observations/2_create_booking_missing.png) |
+| 3  | Create Booking         | Allows **back-dated** bookings.                                                    | ![3_create_booking_backdated](src/test/resources/observations/3_create_booking_backdated.png) |
+| 4  | Create Booking         | **Date validation** incorrect; check-in dates modified in response.                       | ![4_create_booking_dates](src/test/resources/observations/4_create_booking_dates.png) |
+| 5  | Create Booking         | Last name >18 chars allowed; Swagger specifies **3–18 chars**.                       | ![5_create_booking_lastname](src/test/resources/observations/5_create_booking_lastname.png) |
+| 6  | Create Booking         | Last name >30 chars triggers error instead of 18-char max.                          | ![6_create_booking_lastname30](src/test/resources/observations/6_create_booking_lastname30.png) |
+| 7  | Create Booking         | No error for email with **invalid TLD**.                                           | ![7_create_booking_email](src/test/resources/observations/7_create_booking_email.png) |
+| 8  | Create Booking         | Duplicate room ID returns **409 Conflict**.                                         | ![8_create_booking_409](src/test/resources/observations/8_create_booking_409.png) |
+| 9  | Create Booking         | Check-out before check-in returns **409 Conflict** with `error` key instead of 400/`errors`. | ![9_create_booking_dates409](src/test/resources/observations/9_create_booking_dates409.png) |
+| 10 | Delete Booking         | Returns **200** instead of 201; positive flow has **no schema**.                   | ![10_delete_booking_200](src/test/resources/observations/10_delete_booking_200.png) |
+| 11 | Delete Booking         | 401 shows “Authentication required” instead of “Unauthorized”.                     | ![11_delete_booking_401](src/test/resources/observations/11_delete_booking_401.png) |
+| 12 | Delete Booking         | Missing/invalid token returns **500** instead of 401.                               | ![12_delete_booking_invalid_token](src/test/resources/observations/12_create_booking_invalid_token_1.png) |
+| 13 | Delete Booking         | Invalid booking ID returns **500** instead of 404.                                  | ![13_delete_booking_invalid_id](src/test/resources/observations/13_delete_booking_invalid_id.png) |
+| 14 | Delete Booking         | Deleting same booking twice returns **500** instead of 404.                          | ![14_delete_booking_twice](src/test/resources/observations/14_delete_booking_twice_2.png) |
