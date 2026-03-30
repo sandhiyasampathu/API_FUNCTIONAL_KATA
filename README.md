@@ -108,10 +108,10 @@ Captures discrepancies between the **Swagger (OpenAPI) specification** and the *
 Testing revealed several discrepancies between the API implementation and the Swagger specification:
 
 - **Status Code Deviations:** Endpoints return unexpected HTTP codes (e.g., `201` vs `200`, `500` vs `4xx`).  
-- **Incomplete or Inconsistent Responses:** Missing or undocumented fields across `Create`, `Get`, and `Update` endpoints.  
+- **Incomplete or Inconsistent Responses:** Missing or undocumented fields across `Create`, `Get`, `Delete` and `Update` endpoints.  
 - **Input Validation Gaps:** Name, email, phone, and date validations are inconsistently enforced; back-dated bookings are allowed.  
 - **Authentication & Authorization Issues:** Invalid or missing tokens occasionally return incorrect status codes or messages.  
-- **Error Handling Inconsistencies:** Duplicate creation/updation/deletion, invalid IDs, and missing request data result in improper HTTP responses.  
+- **Error Handling Inconsistencies:** Duplicate creation,updation, or deletion attempts, invalid IDs, and missing request data result in improper HTTP responses.  
 
 ---
 
