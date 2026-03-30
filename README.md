@@ -16,6 +16,38 @@ This file defines the API contract, including endpoints, request/response struct
 BDD feature files are created based on the `booking.yaml` specification.  
 These feature files describe the expected behavior of the API in a human-readable format and ensure alignment with the API contract.
 
+### Available Feature Files
+
+| Feature File | Description |
+|--------------|-------------|
+| [authentication_booking.feature](src/test/resources/features/authentication_booking.feature) | Authentication scenarios including token creation and validation (`POST /auth/login`). |
+| [create_booking.feature](src/test/resources/features/create_booking.feature) | Scenarios for creating new bookings (`POST /booking`). |
+| [delete_booking.feature](src/test/resources/features/delete_booking.feature) | Scenarios for deleting bookings (`DELETE /booking/{id}`). |
+| [get_booking.feature](src/test/resources/features/get_booking.feature) | Scenarios for retrieving bookings by ID (`GET /booking/{id}`). |
+| [healthcheck_booking.feature](src/test/resources/features/healthcheck_booking.feature) | API health check scenarios (`GET /booking/actuator/health`). |
+| [update_booking.feature](src/test/resources/features/update_booking.feature) | Scenarios for updating existing bookings (`PUT /booking/{id}`). |
+
+### Tagging Convention
+
+Tags are used to **categorize and filter scenarios** for easier test execution. They are placed above **Feature** or **Scenario** blocks.
+
+| Tag | Description |
+|-----|-------------|
+| `@booking` | Relates to hotel booking endpoints (create, get, update, delete). |
+| `@createbooking` | Scenarios specific to creating bookings (`POST /booking`). |
+| `@deletebooking` | Scenarios specific to deleting bookings (`DELETE /booking/{id}`). |
+| `@getbooking` | Scenarios specific to retrieving bookings (`GET /booking/{id}`). |
+| `@updatebooking` | Scenarios specific to updating bookings (`PUT /booking/{id}`). |
+| `@positive` | Positive test cases verifying expected behavior. |
+| `@negative` | Negative test cases verifying error handling and invalid input. |
+| `@auth` | Scenarios involving authentication or authorization checks. |
+| `@inputvalidation` | Scenarios testing input constraints (e.g., field length, formats). |
+| `@exploratory` | Edge-case or exploratory testing scenarios. |
+| `@smoke` | Critical path tests for quick validation of key flows. |
+| `@integration` | End-to-end tests involving multiple endpoints. |
+| `@sanity` | Basic health checks or sanity validation. |
+| `@healthcheck` | API health/status endpoints (`GET /booking/actuator/health`). |
+
 ## Manual Validation (Bruno)
 
 The Swagger file is imported into Bruno for manual validation of the API.
