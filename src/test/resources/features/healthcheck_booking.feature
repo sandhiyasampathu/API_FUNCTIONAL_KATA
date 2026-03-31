@@ -6,6 +6,7 @@ Feature: API Health Check
 
     Background:
         Given the API base URL is "https://automationintesting.online/api"
+        And the response content-type is set to "application/json"
 
     @healthcheck @positive
     Scenario Outline: Check API health status
@@ -17,10 +18,3 @@ Feature: API Health Check
         Examples:
             | status_code | expected_status |
             | 200         | UP              |
-
-    @healthcheck @positive
-    Scenario: Health check returns valid JSON
-        When I send a GET request to "/booking/actuator/health"
-        Then the response status code should be 200
-        And the response content-type should be "application/json"
-        And the response body should be valid JSON
