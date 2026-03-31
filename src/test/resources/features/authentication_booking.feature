@@ -26,7 +26,7 @@ Feature: Authentication - Create Token
 
     # ------------------- Negative Authentication ----------------
     @negative @auth
-    Scenario Outline: Failed authentication with invalid credentials
+    Scenario Outline: Failed authentication with invalid, missing, or empty credentials
         Given I have the authentication details:
             | username | <username> |
             | password | <password> |
@@ -36,50 +36,14 @@ Feature: Authentication - Create Token
         And the value of "error" should be "<error_message>"
 
         Examples:
-            | username    | password      | status_code | error_message       |
-            | admin       | wrongpassword | 401         | Invalid credentials |
-            | unknownuser | password      | 401         | Invalid credentials |
-            | admin       |               | 401         | Invalid credentials |
-            |             | password      | 401         | Invalid credentials |
-            | wronguser   | wrongpass     | 401         | Invalid credentials |
-
-    @negative @auth
-    Scenario: Authentication fails when username is missing
-        Given I have the authentication details:
-            | password | password |
-        When I send a POST request to the authentication endpoint
-        Then the response status code should be 401
-        And the response body should contain the key "error"
-        And the value of "error" should be "Invalid credentials"
-
-    @negative @auth
-    Scenario: Authentication fails when password is missing
-        Given I have the authentication details:
-            | username | admin |
-        When I send a POST request to the authentication endpoint
-        Then the response status code should be 401
-        And the response body should contain the key "error"
-        And the value of "error" should be "Invalid credentials"
-
-    # ------------------- Exploratory / Edge Cases ----------------
-    @negative @auth @exploratory
-    Scenario: Authentication fails with empty request body
-        Given I have no authentication details
-        When I send a POST request to the authentication endpoint
-        Then the response status code should be 401
-        And the response body should contain the key "error"
-
-    @negative @exploratory
-    Scenario Outline: Authentication with long or special-character credentials
-        Given I have the authentication details:
-            | username | <username> |
-            | password | <password> |
-        When I send a POST request to the authentication endpoint
-        Then the response status code should be <status_code>
-        And the response body should contain the key "<response_key>"
-
-        Examples:
-            | username                                           | password                      | status_code | response_key |
-            | a_very_long_username_exceeding_50_chars_1234567890 | validpassword                 | 401         | error        |
-            | admin                                              | very_long_password_!@#$%^&*() | 401         | error        |
-            | special!@#$%^&*()                                  | password                      | 401         | error        |
+            | username                                           | password                      | status_code | error_message       |
+            | admin                                              | wrongpassword                 | 401         | Invalid credentials |
+            | unknownuser                                        | password                      | 401         | Invalid credentials |
+            | admin                                              |                               | 401         | Invalid credentials |
+            |                                                    | password                      | 401         | Invalid credentials |
+            | wronguser                                          | wrongpass                     | 401         | Invalid credentials |
+            |                                                    |                               | 401         | Invalid credentials |
+            | a_very_long_username_exceeding_50_chars_1234567890 | validpassword                 | 401         | Invalid credentials |
+            | admin                                              | very_long_password_!@#$%^&*() | 401         | Invalid credentials |
+            | special!@#$%^&*()                                  | password                      | 401         | Invalid credentials |
+            
