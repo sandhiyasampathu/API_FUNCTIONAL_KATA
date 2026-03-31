@@ -25,88 +25,50 @@ Feature: Create Booking
         Then the response status code should be <status_code>
         And the response body should contain the key "bookingid"
         And the response body should contain the key "booking"
-        And the value of "booking.firstname" should be "<firstname>"
-        And the value of "booking.lastname" should be "<lastname>"
-        And the value of "booking.roomid" should be <roomid>
-        And the value of "booking.depositpaid" should be <depositpaid>
-        And the value of "booking.bookingdates.checkin" should be "<checkin>"
-        And the value of "booking.bookingdates.checkout" should be "<checkout>"
-        And the value of "booking.email" should be "<email>"
-        And the value of "booking.phone" should be "<phone>"
+        And the response booking details should match the request details
 
         Examples:
             | roomid | firstname | lastname | depositpaid | checkin    | checkout   | email                        | phone        | status_code |
-            | 3      | Élodie    | Peeters  | true        | 2026-05-10 | 2026-05-15 | Élodie_peeters@testmail.com  | +32471234567 | 200         |
-            | 2      | Emma      | Brûlé    | false       | 2026-06-01 | 2026-06-05 | emma.Brûlé@testmail.com      | 32479876543  | 200         |
-            | 1      | Matthias  | De Smet  | true        | 2026-07-20 | 2026-07-26 | matthias.desmet@testmail.com | 32471122334  | 200         |
+            | 3      | Élodie    | Peeters  | true        | <today+2>  | <today+5>  | Élodie_peeters@testmail.com  | +32471234567 | 200         |
+            | 2      | Emma      | Brûlé    | false       | <today+7>  | <today+10> | emma.Brûlé@testmail.com      | 32479876543  | 200         |
+            | 1      | Matthias  | De Smet  | true        | <today+10> | <today+15> | matthias.desmet@testmail.com | 32471122334  | 200         |
 
     # ---------------------------- Negative Scenarios ----------------------------
     @createbooking @negative @inputvalidation
-    Scenario Outline: Fail to create booking with invalid firstname
-        Given I have the request body with firstname "<firstname>" and other valid fields
+    Scenario Outline: Fail to create booking with invalid or missing field values
+        Given I have the request body with <field> "<value>" and other valid fields
         When I send a POST request to the booking endpoint
-        Then the response status code should be 400
+        Then the response status code should be <status_code>
         And the response body should contain the key "errors"
-        And the errors list should contain "size must be between 3 and 18"
+        And the errors list should contain "<error_message>"
 
         Examples:
-            | firstname                | reason                    |
-            | Lu                       | too short (below 3 chars) |
-            | ThisNameIsWayTooLong1234 | too long (above 18 chars) |
+            | field     | value                     | status_code | error_message                       | reason                    |
+            | firstname | Lu                        | 400         | size must be between 3 and 18       | firstname too short       |
+            | firstname | ThisNameIsWayTooLong1234  | 400         | size must be between 3 and 18       | firstname too long        |
+            | lastname  | Pe                        | 400         | size must be between 3 and 18       | lastname too short        |
+            | lastname  | ThisLastNameIsTooLong1234 | 400         | size must be between 3 and 18       | lastname too long         |
+            | phone     | 3247123456                | 400         | size must be between 11 and 21      | phone too short           |
+            | phone     | 3247123456789012345678    | 400         | size must be between 11 and 21      | phone too long            |
+            | email     | émilie                    | 400         | must be a well-formed email address | invalid email format      |
+            | email     | pierre@domain             | 400         | must be a well-formed email address | missing TLD               |
+            | email     | jeanluc@domain_com        | 400         | must be a well-formed email address | invalid domain format     |
+            | email     | @angélique.fr             | 400         | must be a well-formed email address | missing local part        |
+            | checkin   | <today+7>                 | 400         | Failed to create booking            | checkout before checkin   |
+            | checkout  | <today+2>                 | 400         | Failed to create booking            | same checkin and checkout |
 
     @createbooking @negative @inputvalidation
-    Scenario Outline: Fail to create booking with invalid lastname
-        Given I have the request body with lastname "<lastname>" and other valid fields
+    Scenario Outline: Fail to create booking when mandatory fields are missing
+        Given I have the request body with <field> "<value>" and other valid fields
         When I send a POST request to the booking endpoint
-        Then the response status code should be 400
+        Then the response status code should be <status_code>
         And the response body should contain the key "errors"
-        And the errors list should contain "size must be between 3 and 18"
+        And the errors list should not be empty
 
         Examples:
-            | lastname                  | reason                    |
-            | Pe                        | too short (below 3 chars) |
-            | ThisLastNameIsTooLong1234 | too long (above 18 chars) |
-
-    @createbooking @negative @inputvalidation
-    Scenario Outline: Fail to create booking with invalid phone number
-        Given I have the request body with phone "<phone>" and other valid fields
-        When I send a POST request to the booking endpoint
-        Then the response status code should be 400
-        And the response body should contain the key "errors"
-        And the errors list should contain "size must be between 11 and 21"
-
-        Examples:
-            | phone                  | reason                     |
-            | 3247123456             | too short (below 11 chars) |
-            | 3247123456789012345678 | too long (above 21 chars)  |
-
-    @createbooking @negative @inputvalidation
-    Scenario Outline: Fail to create booking with invalid email
-        Given I have the request body with email "<email>" and other valid fields
-        When I send a POST request to the booking endpoint
-        Then the response status code should be 400
-        And the response body should contain the key "errors"
-        And the errors list should contain "must be a well-formed email address"
-
-        Examples:
-            | email              | reason                |
-            | émilie             | missing @ and domain  |
-            | pierre@domain      | missing TLD           |
-            | jeanluc@domain_com | invalid domain format |
-            | @angélique.fr      | missing local part    |
-
-    @createbooking @negative @inputvalidation
-    Scenario: Fail to create booking when checkout is before checkin
-        Given I have the request body with checkin "2026-05-15" and checkout "2026-05-10"
-        When I send a POST request to the booking endpoint
-        Then the response status code should be 400
-        And the response body should contain the key "errors"
-        And the errors list should contain "Failed to create booking"
-
-    @createbooking @negative @inputvalidation
-    Scenario: Fail to create booking when checkout equals checkin
-        Given I have the request body with checkin "2026-05-10" and checkout "2026-05-10"
-        When I send a POST request to the booking endpoint
-        Then the response status code should be 400
-        And the response body should contain the key "errors"
-        And the errors list should contain "Failed to create booking"
+            | field     | value   | status_code | reason                                     |
+            | firstname | removed | 400         | firstname is mandatory and cannot be empty |
+            | lastname  | removed | 400         | lastname is mandatory and cannot be empty  |
+            | checkin   | removed | 400         | checkin date is required                   |
+            | checkout  | removed | 400         | checkout date is required                  |
+            | email     | removed | 400         | email is mandatory and cannot be empty     |
