@@ -18,13 +18,19 @@ Feature: Delete Booking
         Then the response status code should be 201
 
     @deletebooking @positive @integration
-    Scenario: Verify booking exists before deletion
+    Scenario Outline: Verify booking exists before deletion
         Given the Cookie header is set to "token={auth_token}"
         When I send a GET request to "/booking/{booking_id}"
         Then the response status code should be 200
         And the response body should contain all the expected booking details
         When I send a DELETE request to "/booking/{booking_id}"
         Then the response status code should be 201
+
+        Examples:
+            | roomid | firstname | lastname | depositpaid | checkin   | checkout   | email                       | phone       |
+            | 2      | Élodie    | Peeters  | false       | <today+2> | <today+5>  | elodie.peeters@testmail.com | 32471234567 |
+            | 1      | André     | Brûlé    | true        | <today+7> | <today+12> | andre.brule@testmail.com    | 32479876543 |
+
 
     @deletebooking @positive @integration @exploratory
     Scenario: Verify booking no longer exists after deletion
